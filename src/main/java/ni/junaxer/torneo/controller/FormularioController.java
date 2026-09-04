@@ -100,6 +100,16 @@ public class FormularioController implements Initializable {
             return;
         }
 
+        if (telefono.length() < 8) {
+            AlertaUtil.mostrarError("El teléfono debe tener 8 dígitos. Ingresó menos de 8.");
+            return;
+        }
+
+        if (telefono.length() > 8) {
+            AlertaUtil.mostrarError("El teléfono debe tener 8 dígitos. Ingresó más de 8.");
+            return;
+        }
+
         if (categoria == null) {
             AlertaUtil.mostrarError("Debe seleccionarse una categoría.");
             return;

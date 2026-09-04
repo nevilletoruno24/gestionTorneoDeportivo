@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<HBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="ni.junaxer.torneo.controller.MainController"
+      spacing="0">
+
+    <!-- Sección Izquierda: Formulario de Registro -->
+    <VBox>
+        <fx:include fx:id="formulario" source="formulario-view.fxml"/>
+    </VBox>
+
+    <!-- Separador vertical -->
+    <Separator orientation="VERTICAL"/>
+
+    <!-- Sección Derecha: Tabla de Participantes -->
+    <VBox spacing="14.0" HBox.hgrow="ALWAYS">
+        <padding>
+            <Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/>
+        </padding>
+
+        <Label text="Listado de Participantes Inscritos">
+            <font>
+                <Font name="System Bold" size="18.0"/>
+            </font>
+        </Label>
+
+        <TableView fx:id="tablaParticipantes" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colNombre" text="Nombre" prefWidth="140"/>
+                <TableColumn fx:id="colEdad" text="Edad" prefWidth="55"/>
+                <TableColumn fx:id="colCategoria" text="Categoría" prefWidth="90"/>
+                <TableColumn fx:id="colModalidad" text="Modalidad" prefWidth="90"/>
+                <TableColumn fx:id="colDisciplina" text="Disciplina" prefWidth="90"/>
+                <TableColumn fx:id="colCaracteristicas" text="Características" prefWidth="180"/>
+                <TableColumn fx:id="colEstado" text="Estado" prefWidth="75"/>
+            </columns>
+            <placeholder>
+                <Label text="No hay participantes registrados"/>
+            </placeholder>
+        </TableView>
+
+        <HBox alignment="CENTER_RIGHT">
+            <Label fx:id="lblTotal" text="Total de inscritos: 0" style="-fx-font-weight: bold;"/>
+        </HBox>
+    </VBox>
+</HBox>
