@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
+
+<fx:root type="VBox"
+         xmlns="http://javafx.com/javafx"
+         xmlns:fx="http://javafx.com/fxml"
+         style="-fx-spacing: 3px;">
+
+    <Label fx:id="lblTitle" style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #475569;"/>
+    <ComboBox fx:id="cbInput" maxWidth="Infinity"/>
+
+</fx:root>

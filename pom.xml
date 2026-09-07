@@ -45,7 +45,7 @@
                     <execution>
                         <id>default-cli</id>
                         <configuration>
-                            <mainClass>ni.junaxer.torneo/ni.junaxer.torneo.TorneoApplication</mainClass>
+                            <mainClass>ni.junaxer.torneo/ni.junaxer.torneo.Launcher</mainClass>
                             <launcher>app</launcher>
                             <jlinkZipName>app</jlinkZipName>
                             <jlinkImageName>app</jlinkImageName>

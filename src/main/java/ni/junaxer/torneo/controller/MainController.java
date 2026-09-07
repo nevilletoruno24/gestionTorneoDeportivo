@@ -2,17 +2,15 @@ package ni.junaxer.torneo.controller;
 
 import javafx.collections.ListChangeListener;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import ni.junaxer.torneo.model.Participante;
+import ni.junaxer.torneo.utils.AlertaUtil;
 
-import java.net.URL;
-import java.util.ResourceBundle;
+public class MainController {
 
-public class MainController implements Initializable {
 
-    // Controlador del formulario incluido (inyectado por JavaFX vía fx:include fx:id="formulario")
     @FXML
     private FormularioController formularioController;
 
@@ -41,11 +39,13 @@ public class MainController implements Initializable {
     private TableColumn<Participante, String> colEstado;
 
     @FXML
+    private TableColumn<Participante, Void> colAcciones;
+
+    @FXML
     private Label lblTotal;
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        // Configurar cada columna con su atributo del modelo
+    @FXML
+    public void initialize() {
         colNombre.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         colEdad.setCellValueFactory(new PropertyValueFactory<>("edad"));
         colCategoria.setCellValueFactory(new PropertyValueFactory<>("categoria"));
@@ -54,21 +54,52 @@ public class MainController implements Initializable {
         colCaracteristicas.setCellValueFactory(new PropertyValueFactory<>("caracteristicas"));
         colEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
 
-        // Asignar la lista compartida del formulario a la tabla
+        configurarColumnaAcciones();
+
         tablaParticipantes.setItems(formularioController.getListaParticipantes());
 
-        // Listener para actualizar el contador cada vez que la lista cambia
-        formularioController.getListaParticipantes().addListener((ListChangeListener<Participante>) change -> {
-            actualizarContador();
+        formularioController.getListaParticipantes().addListener((ListChangeListener<Participante>) change -> actualizarContador());
+
+        formularioController.setOnReset(() -> tablaParticipantes.getSelectionModel().clearSelection());
+
+        tablaParticipantes.getSelectionModel().selectedItemProperty().addListener((obs, oldSelection, newSelection) -> {
+            if (newSelection != null) {
+                formularioController.cargarParaEditar(newSelection);
+            }
         });
 
         actualizarContador();
+    }
+
+    private void configurarColumnaAcciones() {
+        colAcciones.setCellFactory(param -> new TableCell<>() {
+            private final Button btnEliminar = new Button("Eliminar");
+
+            {
+                btnEliminar.setStyle("-fx-background-color: #ef4444; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 4 10; -fx-background-radius: 4;");
+                btnEliminar.setOnAction(event -> {
+                    Participante participante = getTableView().getItems().get(getIndex());
+                    if (AlertaUtil.confirmar("¿Está seguro de eliminar al participante " + participante.getNombre() + "?")) {
+                        formularioController.eliminarParticipante(participante);
+                    }
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty) {
+                    setGraphic(null);
+                } else {
+                    setGraphic(btnEliminar);
+                    setAlignment(Pos.CENTER);
+                }
+            }
+        });
     }
 
     private void actualizarContador() {
         int total = tablaParticipantes.getItems().size();
         lblTotal.setText("Total de inscritos: " + total);
     }
-
-
 }

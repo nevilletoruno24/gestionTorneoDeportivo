@@ -1,67 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import javafx.scene.text.Font?>
+<?import ni.junaxer.torneo.components.CustomInput?>
+<?import ni.junaxer.torneo.components.CustomComboBox?>
 
-<VBox spacing="14.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="ni.junaxer.torneo.controller.FormularioController">
-    <padding>
-        <Insets top="20.0" right="20.0" bottom="20.0" left="20.0"/>
-    </padding>
+<VBox xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="ni.junaxer.torneo.controller.FormularioController"
+      style="-fx-background-color: #FFFFFF; -fx-border-color: #e2e8f0; -fx-border-width: 0 1px 0 0; -fx-padding: 16px; -fx-spacing: 8px; -fx-min-width: 300px; -fx-pref-width: 300px; -fx-max-width: 300px;">
 
-    <Label text="Registro de Participantes">
-        <font>
-            <Font name="System Bold" size="18.0"/>
-        </font>
-    </Label>
+    <Label fx:id="lblTitulo" text="Registro de Participantes"
+           style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #0f172a;"/>
 
-    <GridPane hgap="10.0" vgap="10.0">
-        <columnConstraints>
-            <ColumnConstraints minWidth="130.0" prefWidth="140.0"/>
-            <ColumnConstraints hgrow="ALWAYS" minWidth="200.0"/>
-        </columnConstraints>
+    <VBox style="-fx-spacing: 8px;">
+        <CustomInput fx:id="txtNombre" title="Nombre completo:" promptText="Mínimo 5 caracteres"/>
+        <CustomInput fx:id="txtEdad" title="Edad:" promptText="15 a 60 años"/>
+        <CustomInput fx:id="txtTelefono" title="Teléfono:" promptText="Solo números"/>
+        <CustomComboBox fx:id="cbCategoria" title="Categoría:" promptText="Seleccione categoría"/>
+        <CustomComboBox fx:id="cbGenero" title="Género:" promptText="Seleccione género"/>
+        <CustomComboBox fx:id="cbModalidad" title="Modalidad:" promptText="Seleccione modalidad"/>
 
-        <Label text="Nombre completo:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
-        <TextField fx:id="txtNombre" promptText="Mínimo 5 caracteres"
-                   GridPane.columnIndex="1" GridPane.rowIndex="0"/>
-
-        <Label text="Edad:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
-        <TextField fx:id="txtEdad" promptText="15 a 60 años"
-                   GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-
-        <Label text="Teléfono:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
-        <TextField fx:id="txtTelefono" promptText="Solo números"
-                   GridPane.columnIndex="1" GridPane.rowIndex="2"/>
-
-        <Label text="Categoría:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
-        <ComboBox fx:id="cbCategoria" promptText="Seleccione categoría" maxWidth="Infinity"
-                  GridPane.columnIndex="1" GridPane.rowIndex="3"/>
-
-        <Label text="Género:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
-        <ComboBox fx:id="cbGenero" promptText="Seleccione género" maxWidth="Infinity"
-                  GridPane.columnIndex="1" GridPane.rowIndex="4"/>
-
-        <Label text="Modalidad:" GridPane.columnIndex="0" GridPane.rowIndex="5"/>
-        <ComboBox fx:id="cbModalidad" promptText="Seleccione modalidad" maxWidth="Infinity"
-                  GridPane.columnIndex="1" GridPane.rowIndex="5"/>
-
-        <Label text="Disciplina:" GridPane.columnIndex="0" GridPane.rowIndex="6"/>
-        <ListView fx:id="lvDisciplina" prefHeight="110.0"
-                  GridPane.columnIndex="1" GridPane.rowIndex="6"/>
-    </GridPane>
-
-    <Label text="Características:" style="-fx-font-weight: bold;"/>
-    <VBox spacing="6.0">
-        <CheckBox fx:id="chkFederado" text="Federado"/>
-        <CheckBox fx:id="chkExperiencia" text="Experiencia previa"/>
-        <CheckBox fx:id="chkDisponibilidad" text="Disponibilidad fines de semana"/>
-        <CheckBox fx:id="chkSeguro" text="Seguro deportivo"/>
+        <VBox style="-fx-spacing: 3px;">
+            <Label text="Disciplina:" style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #475569;"/>
+            <ListView fx:id="lvDisciplina" prefHeight="110.0"/>
+        </VBox>
     </VBox>
 
-    <HBox spacing="10.0" alignment="CENTER_RIGHT">
-        <Button text="Limpiar" onAction="#onLimpiar"/>
-        <Button text="Registrar" onAction="#onRegistrar" defaultButton="true"/>
+    <VBox style="-fx-spacing: 4px;">
+        <Label text="Características:" style="-fx-font-size: 11px; -fx-font-weight: bold; -fx-text-fill: #475569;"/>
+        <GridPane hgap="8.0" vgap="4.0">
+            <CheckBox fx:id="chkFederado" text="Federado" style="-fx-font-size: 11px;" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+            <CheckBox fx:id="chkExperiencia" text="Exp. previa" style="-fx-font-size: 11px;" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+            <CheckBox fx:id="chkDisponibilidad" text="Fines de semana" style="-fx-font-size: 11px;" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+            <CheckBox fx:id="chkSeguro" text="Seguro deportivo" style="-fx-font-size: 11px;" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+        </GridPane>
+    </VBox>
+
+    <Region VBox.vgrow="ALWAYS"/>
+
+    <HBox style="-fx-spacing: 10px; -fx-alignment: center-right; -fx-padding: 6px 0 0 0;">
+        <Button text="Limpiar" onAction="#onLimpiar"
+                style="-fx-background-color: #f1f5f9; -fx-text-fill: #475569; -fx-cursor: hand; -fx-padding: 7 14; -fx-background-radius: 4; -fx-border-color: #cbd5e1; -fx-border-radius: 4;"/>
+        <Button fx:id="btnRegistrar" text="Registrar" onAction="#onRegistrar" defaultButton="true"
+                style="-fx-background-color: #077F52; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand; -fx-padding: 7 14; -fx-background-radius: 4;"/>
     </HBox>
 </VBox>

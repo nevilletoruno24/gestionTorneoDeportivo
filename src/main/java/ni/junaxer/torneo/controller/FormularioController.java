@@ -3,35 +3,41 @@ package ni.junaxer.torneo.controller;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import ni.junaxer.torneo.components.CustomComboBox;
+import ni.junaxer.torneo.components.CustomInput;
 import ni.junaxer.torneo.model.Participante;
 import ni.junaxer.torneo.utils.AlertaUtil;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 
-public class FormularioController implements Initializable {
-
-    @FXML
-    private TextField txtNombre;
+public class FormularioController {
 
     @FXML
-    private TextField txtEdad;
+    private Label lblTitulo;
 
     @FXML
-    private TextField txtTelefono;
+    private CustomInput txtNombre;
 
     @FXML
-    private ComboBox<String> cbCategoria;
+    private CustomInput txtEdad;
 
     @FXML
-    private ComboBox<String> cbGenero;
+    private CustomInput txtTelefono;
 
     @FXML
-    private ComboBox<String> cbModalidad;
+    private CustomComboBox cbCategoria;
+
+    @FXML
+    private CustomComboBox cbGenero;
+
+    @FXML
+    private CustomComboBox cbModalidad;
 
     @FXML
     private ListView<String> lvDisciplina;
@@ -48,10 +54,15 @@ public class FormularioController implements Initializable {
     @FXML
     private CheckBox chkSeguro;
 
-    private ObservableList<Participante> listaParticipantes = FXCollections.observableArrayList();
+    @FXML
+    private Button btnRegistrar;
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
+    private final ObservableList<Participante> listaParticipantes = FXCollections.observableArrayList();
+    private Participante participanteEditando = null;
+    private Runnable onReset;
+
+    @FXML
+    public void initialize() {
         cbCategoria.getItems().addAll("Juvenil", "Intermedia", "Senior");
         cbGenero.getItems().addAll("Masculino", "Femenino", "Otro");
         cbModalidad.getItems().addAll("Individual", "Parejas", "Equipos");
@@ -60,6 +71,39 @@ public class FormularioController implements Initializable {
 
     public ObservableList<Participante> getListaParticipantes() {
         return listaParticipantes;
+    }
+
+    public void setOnReset(Runnable onReset) {
+        this.onReset = onReset;
+    }
+
+    public void cargarParaEditar(Participante participante) {
+        if (participante == null) return;
+        this.participanteEditando = participante;
+
+        lblTitulo.setText("Modo Edición");
+        btnRegistrar.setText("Guardar Cambios");
+
+        txtNombre.setText(participante.getNombre());
+        txtEdad.setText(String.valueOf(participante.getEdad()));
+        txtTelefono.setText(participante.getTelefono());
+        cbCategoria.setValue(participante.getCategoria());
+        cbGenero.setValue(participante.getGenero());
+        cbModalidad.setValue(participante.getModalidad());
+        lvDisciplina.getSelectionModel().select(participante.getDisciplina());
+
+        String carac = participante.getCaracteristicas();
+        chkFederado.setSelected(carac != null && carac.contains("Federado"));
+        chkExperiencia.setSelected(carac != null && carac.contains("Experiencia previa"));
+        chkDisponibilidad.setSelected(carac != null && carac.contains("Disponibilidad fines de semana"));
+        chkSeguro.setSelected(carac != null && carac.contains("Seguro deportivo"));
+    }
+
+    public void eliminarParticipante(Participante participante) {
+        listaParticipantes.remove(participante);
+        if (participanteEditando == participante) {
+            onLimpiar();
+        }
     }
 
     @FXML
@@ -73,12 +117,12 @@ public class FormularioController implements Initializable {
         String disciplina = lvDisciplina.getSelectionModel().getSelectedItem();
 
         if (nombre.isEmpty()) {
-            AlertaUtil.mostrarError("El nombre es obligatorio.");
+            AlertaUtil.mostrarAlerta(Alert.AlertType.ERROR, "Error", "El nombre es obligatorio.");
             return;
         }
 
         if (nombre.length() < 5) {
-            AlertaUtil.mostrarError("El nombre debe tener mínimo 5 caracteres.");
+            AlertaUtil.mostrarAlerta(Alert.AlertType.ERROR, "Error", "El nombre debe tener mínimo 5 caracteres.");
             return;
         }
 
@@ -86,42 +130,37 @@ public class FormularioController implements Initializable {
         try {
             edad = Integer.parseInt(edadTexto);
         } catch (NumberFormatException e) {
-            AlertaUtil.mostrarError("La edad debe ser un número entero.");
+            AlertaUtil.mostrarAlerta(Alert.AlertType.ERROR, "Error", "La edad debe ser un número entero.");
             return;
         }
 
         if (edad < 15 || edad > 60) {
-            AlertaUtil.mostrarError("La edad debe estar entre 15 y 60 años.");
+            AlertaUtil.mostrarAlerta(Alert.AlertType.ERROR, "Error", "La edad debe estar entre 15 y 60 años.");
             return;
         }
 
         if (telefono.isEmpty() || !telefono.matches("\\d+")) {
-            AlertaUtil.mostrarError("El teléfono solamente debe aceptar números.");
+            AlertaUtil.mostrarAlerta(Alert.AlertType.ERROR, "Error", "El teléfono solamente debe aceptar números.");
             return;
         }
 
-        if (telefono.length() < 8) {
-            AlertaUtil.mostrarError("El teléfono debe tener 8 dígitos. Ingresó menos de 8.");
-            return;
-        }
-
-        if (telefono.length() > 8) {
-            AlertaUtil.mostrarError("El teléfono debe tener 8 dígitos. Ingresó más de 8.");
+        if (telefono.length() != 8) {
+            AlertaUtil.mostrarAlerta(Alert.AlertType.ERROR, "Error", "El teléfono debe tener exactamente 8 dígitos.");
             return;
         }
 
         if (categoria == null) {
-            AlertaUtil.mostrarError("Debe seleccionarse una categoría.");
+            AlertaUtil.mostrarAlerta(Alert.AlertType.ERROR, "Error", "Debe seleccionarse una categoría.");
             return;
         }
 
         if (modalidad == null) {
-            AlertaUtil.mostrarError("Debe seleccionarse una modalidad.");
+            AlertaUtil.mostrarAlerta(Alert.AlertType.ERROR, "Error", "Debe seleccionarse una modalidad.");
             return;
         }
 
         if (disciplina == null) {
-            AlertaUtil.mostrarError("Debe seleccionarse una disciplina.");
+            AlertaUtil.mostrarAlerta(Alert.AlertType.ERROR, "Error", "Debe seleccionarse una disciplina.");
             return;
         }
 
@@ -145,25 +184,42 @@ public class FormularioController implements Initializable {
                 "Inscrito"
         );
 
-        listaParticipantes.add(participante);
+        if (participanteEditando == null) {
+            listaParticipantes.add(participante);
+            AlertaUtil.mostrarAlerta(Alert.AlertType.INFORMATION, "Información", "El participante ha sido registrado correctamente.");
+        } else {
+            int index = listaParticipantes.indexOf(participanteEditando);
+            if (index >= 0) {
+                listaParticipantes.set(index, participante);
+            }
+            AlertaUtil.mostrarAlerta(Alert.AlertType.INFORMATION, "Información", "Los datos del participante han sido actualizados.");
+        }
 
-        AlertaUtil.mostrarInformacion("El participante ha sido registrado correctamente.");
         onLimpiar();
     }
 
     @FXML
     private void onLimpiar() {
+        participanteEditando = null;
+        lblTitulo.setText("Registro de Participantes");
+        btnRegistrar.setText("Registrar");
+
         txtNombre.clear();
         txtEdad.clear();
         txtTelefono.clear();
-        cbCategoria.getSelectionModel().clearSelection();
-        cbGenero.getSelectionModel().clearSelection();
-        cbModalidad.getSelectionModel().clearSelection();
+        cbCategoria.clearSelection();
+        cbGenero.clearSelection();
+        cbModalidad.clearSelection();
         lvDisciplina.getSelectionModel().clearSelection();
         chkFederado.setSelected(false);
         chkExperiencia.setSelected(false);
         chkDisponibilidad.setSelected(false);
         chkSeguro.setSelected(false);
+
+        if (onReset != null) {
+            onReset.run();
+        }
+
         txtNombre.requestFocus();
     }
 }

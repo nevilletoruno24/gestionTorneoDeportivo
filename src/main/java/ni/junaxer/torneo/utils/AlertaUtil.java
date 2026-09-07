@@ -7,7 +7,7 @@ import java.util.Optional;
 
 public class AlertaUtil {
 
-    public static void mostrar(Alert.AlertType tipo, String titulo, String mensaje) {
+    public static void mostrarAlerta(Alert.AlertType tipo, String titulo, String mensaje) {
         Alert alerta = new Alert(tipo);
         alerta.setTitle(titulo);
         alerta.setHeaderText(null);
@@ -15,12 +15,12 @@ public class AlertaUtil {
         alerta.showAndWait();
     }
 
-    public static void mostrarError(String mensaje) {
-        mostrar(Alert.AlertType.ERROR, "Error", mensaje);
+    public static boolean confirmar(String mensaje) {
+        Alert alerta = new Alert(Alert.AlertType.CONFIRMATION);
+        alerta.setTitle("Confirmación");
+        alerta.setHeaderText(null);
+        alerta.setContentText(mensaje);
+        Optional<ButtonType> resultado = alerta.showAndWait();
+        return resultado.isPresent() && resultado.get() == ButtonType.OK;
     }
-
-    public static void mostrarInformacion(String mensaje) {
-        mostrar(Alert.AlertType.INFORMATION, "Información", mensaje);
-    }
-
 }
