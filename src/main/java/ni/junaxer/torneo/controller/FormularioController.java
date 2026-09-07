@@ -199,7 +199,7 @@ public class FormularioController {
     }
 
     @FXML
-    private void onLimpiar() {
+    public void onLimpiar() {
         participanteEditando = null;
         lblTitulo.setText("Registro de Participantes");
         btnRegistrar.setText("Registrar");
